@@ -1,0 +1,68 @@
+[
+    {
+        "id": 35,
+        "name": "Alma",
+        "age": 5,
+        "favFood": "ananas",
+        "loves": "bli klappad",
+        "imgName": "hamster-35.jpg",
+        "wins": 3,
+        "defeats": 8,
+        "games": 11
+    },
+    {
+        "id": 36,
+        "name": "Molly",
+        "age": 3,
+        "favFood": "ananas",
+        "loves": "bli klappad",
+        "imgName": "hamster-36.jpg",
+        "wins": 7,
+        "defeats": 3,
+        "games": 10
+    },
+    {
+        "id": 37,
+        "name": "Smulan",
+        "age": 1,
+        "favFood": "gräs",
+        "loves": "bli klappad",
+        "imgName": "hamster-37.jpg",
+        "wins": 13,
+        "defeats": 2,
+        "games": 15
+    },
+    {
+        "id": 38,
+        "name": "Nisse",
+        "age": 2,
+        "favFood": "majs",
+        "loves": "bli klappad",
+        "imgName": "hamster-38.jpg",
+        "wins": 3,
+        "defeats": 14,
+        "games": 17
+    },
+    {
+        "id": 39,
+        "name": "Fluffy",
+        "age": 7,
+        "favFood": "sallad",
+        "loves": "springa i hamsterhjulet",
+        "imgName": "hamster-39.jpg",
+        "wins": 21,
+        "defeats": 1,
+        "games": 22
+    },
+    {
+        "id": 40,
+        "name": "Dart",
+        "age": 3,
+        "favFood": "morot",
+        "loves": "äta",
+        "imgName": "hamster-40.jpg",
+        "wins": 12,
+        "defeats": 12,
+        "games": 24
+    }
+]

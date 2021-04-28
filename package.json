@@ -1,0 +1,23 @@
+{
+  "name": "hamsterwars",
+  "version": "1.0.0",
+  "description": "Kurs Effektiv frontend, projekt backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx http-server ./evaluate/"
+  },
+  "keywords": [
+    "REST",
+    "API",
+    "Node",
+    "Express",
+    "Firestore"
+  ],
+  "author": "Sara Lindström",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "firebase-admin": "^9.6.0"
+  }
+}
