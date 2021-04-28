@@ -8,76 +8,96 @@ const db = getDatabase()
 //http://localhost:7777/hamsters
 router.get('/', async (req, res) => {
     const hamstersRef = db.collection('hamsters');
-    const snapShot = await hamstersRef.get();
-
-    if (snapShot.empty) {
-        res.status(404).send('There are no hamsters here!');
-        return;
-    };
-
     let allHamsters = [];
-    snapShot.forEach( doc => {
-        const data = doc.data();
-        data.id = doc.id;
-        allHamsters.push(data);
-    });
+    
+    try {
+        const snapShot = await hamstersRef.get();
+        if (snapShot.empty) {
+            res.status(404).send('There are no hamsters here!');
+            return;
+        };
 
-    res.status(200).send(allHamsters);
+        snapShot.forEach( doc => {
+            const data = doc.data();
+            data.id = doc.id;
+            allHamsters.push(data);
+        });
+        
+        res.status(200).send(allHamsters);
+    } 
+    catch (error) {
+        res.status(500).send(error.message)
+    }
 });
 
 //GET random hamsters 
 //http://localhost:7777/hamsters/random
 router.get('/random', async (req, res) => {
     const hamstersRef = db.collection('hamsters')
-    const snapshot = await hamstersRef.get()
-    
-    if (snapshot.empty) {
-        res.status(404).send('There are no hamsters here!');
-        return
-    }
-    
     let items = []
-    snapshot.forEach(doc => {
-        const data = doc.data()
-        data.id = doc.id;
-        items.push(data)
-    });
     
-    let randomIndex = Math.floor(Math.random() * items.length);
-    res.status(200).send(items[randomIndex]);
+    try {
+        const snapshot = await hamstersRef.get()
+        if (snapshot.empty) {
+            res.status(404).send('There are no hamsters here!');
+            return
+        }
+        
+        snapshot.forEach(doc => {
+            const data = doc.data()
+            data.id = doc.id;
+            items.push(data)
+        });
+        
+        let randomIndex = Math.floor(Math.random() * items.length);
+        res.status(200).send(items[randomIndex]);
+    } 
+    catch (error) {
+        res.status(500).send(error.message)
+    }
 });
 
 //GET hamsters by ID 
 //http://localhost:7777/hamsters/2w4gtJCakWDndyqXi7wI
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
-    const hamsterIdRef = await db.collection('hamsters').doc(id).get()
+    
+    try {
+        const hamsterIdRef = await db.collection('hamsters').doc(id).get()
+        if(!hamsterIdRef.exists) {
+            res.status(404).send('Hamster does not exist')
+            return;
+        };
 
-    if(!hamsterIdRef.exists) {
-        res.status(404).send('Hamster does not exist')
-        return;
-    };
-
-    const data = hamsterIdRef.data();
-    data.id = hamsterIdRef.id
-    res.status(200).send(data);
-})
+        const data = hamsterIdRef.data();
+        data.id = hamsterIdRef.id
+        res.status(200).send(data);
+    } 
+    catch (error) {
+        res.status(500).send(error.message)
+    }
+});
 
 //POST create new hamster
 //http://localhost:7777/hamsters
 router.post('/', async (req, res) => {
     const object = req.body;
 
-    if( !isHamstersObject(object)) {
-        res.status(400).send('Wrong structure on the object')
-        return
-    };
-    
-    const hamsterRef = await db.collection('hamsters').add(object);
-    objectId = {
-        id: hamsterRef.id
+    try {
+        const hamsterRef = await db.collection('hamsters').add(object);
+        if( !isHamstersObject(object)) {
+            res.status(400).send('Wrong structure on the object')
+            return
+        };
+        
+        objectId = {
+            id: hamsterRef.id
+        }
+        res.status(200).send(objectId);
+    } 
+    catch (error) {
+        res.status(500).send(error.message)
     }
-    res.status(200).send(objectId);
 });
 
 //Functions
@@ -107,35 +127,39 @@ function isPositiveNumber(x) {
 router.put("/:id", async (req, res) => {
     const object = req.body;
     const id = req.params.id;
-    
     const hamsterRef = db.collection("hamsters");
-    const snapshot = await hamsterRef.get();
     
-    let hamsterId = false;
+    try {
+        const snapshot = await hamsterRef.get();
+        let hamsterId = false;
 
-    snapshot.forEach((doc) => {
-        if (id === doc.id) {
-        hamsterId = true;
+        snapshot.forEach((doc) => {
+            if (id === doc.id) {
+            hamsterId = true;
+            }
+        });
+
+        if (!Object.keys(object).length) {
+            res.sendStatus(400)
+            return
+        } 
+        else if (!checkInput(object)) {
+            res.status(400).send("Wrong structure on the object");
+            console.log(6)
+            return;
         }
-    });
+        else if (!hamsterId) {
+            res.status(404).send("There is no hamster with that id.");
+            console.log(7)
+            return;
+        }
 
-    if (!Object.keys(object).length) {
-        res.sendStatus(400)
-        return
+        await db.collection("hamsters").doc(id).set(object, { merge: true });
+        res.send("Hamster changed.");
     } 
-    else if (!checkInput(object)) {
-        res.status(400).send("Wrong structure on the object");
-        console.log(6)
-        return;
+    catch (error) {
+        res.status(500).send(error.message)
     }
-    else if (!hamsterId) {
-        res.status(404).send("There is no hamster with that id.");
-        console.log(7)
-        return;
-    }
-
-    await db.collection("hamsters").doc(id).set(object, { merge: true });
-    res.send("Hamster changed.");
 });
 
 function checkInput(obj) {
@@ -207,19 +231,25 @@ function isASting(x) {
 //http://localhost:7777/hamsters/2w4gtJCakWDndyqXi7wI
 router.delete('/:id', async (req, res) => {
     const id = req.params.id
-    const hamsterIdRef = await db.collection('hamsters').doc(id).get();
 
-    if( !id ) {
-        res.sendStatus(400).send('Wrong structure on the id')
-        return;
+    try {
+        const hamsterIdRef = await db.collection('hamsters').doc(id).get();
+
+        if( !id ) {
+            res.sendStatus(400).send('Wrong structure on the id')
+            return;
+        }
+        else if ( !hamsterIdRef.exists ) {
+            res.status(404).send('Hamster does not exist')
+            return;
+        };
+
+        await db.collection('hamsters').doc(id).delete()
+        res.sendStatus(200);
+    } 
+    catch (error) {
+        res.status(500).send(error.message)
     }
-    else if ( !hamsterIdRef.exists ) {
-        res.status(404).send('Hamster does not exist')
-        return;
-    };
-
-    await db.collection('hamsters').doc(id).delete()
-    res.sendStatus(200);
 })
 
 module.exports = router
