@@ -11,7 +11,7 @@ const losers = require('./routes/losers.js')
 const staticFolder1 = path.join(__dirname,'frontend')
 const staticFolder2 = path.join(__dirname,'image/hamsters')
 
-const PORT = 7777
+const PORT = process.env.PORT || 7777
 
 //Middleware
 app.use((req, res, next) =>{

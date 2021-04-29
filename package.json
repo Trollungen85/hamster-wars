@@ -4,7 +4,7 @@
   "description": "Kurs Effektiv frontend, projekt backend",
   "main": "index.js",
   "scripts": {
-    "start": "npx http-server ./evaluate/"
+    "start": "node server.js"
   },
   "keywords": [
     "REST",
@@ -16,8 +16,10 @@
   "author": "Sara Lindström",
   "license": "ISC",
   "dependencies": {
+    "-": "^0.0.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "firebase-admin": "^9.6.0"
+    "firebase-admin": "^9.6.0",
+    "heroku": "^7.53.0"
   }
 }
