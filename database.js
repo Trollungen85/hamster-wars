@@ -1,19 +1,21 @@
 const admin = require("firebase-admin");
 
-if( process.env.PRIVATE_KEY ){​​​​​
-serviceAccount = JSON.parse( process.env.PRIVATE_KEY )
-}​​​​​ 
-else {​​​​​
-serviceAccount = require("./hamsterwars-key.json")
-};​​​​​
+//const serviceAccount = require("./hamsterwars-key.json");
+//serviceAccount ändras för HEROKU
+let serviceAccount;
 
+if( process.env.PRIVATE_KEY ){
+serviceAccount = JSON.parse( process.env.PRIVATE_KEY )
+} else {
+serviceAccount = require("./hamsterwars-key.json")
+}
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+credential: admin.credential.cert(serviceAccount)
 });
 
 function getDatabase() {
-    return admin.firestore();
+return admin.firestore();
 }
 
 module.exports = getDatabase
